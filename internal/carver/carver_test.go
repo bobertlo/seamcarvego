@@ -32,7 +32,7 @@ var testFiles = []TestFile{
 	},
 }
 
-func loadTestFile(t *testing.T, tf TestFile) *Carver {
+func loadTestFile(t *testing.T, tf TestFile) Carver {
 	name := path.Join(testPath, tf.name)
 	c, err := New(name)
 	if err != nil {
@@ -42,4 +42,11 @@ func loadTestFile(t *testing.T, tf TestFile) *Carver {
 }
 
 func TestCarvers(t *testing.T) {
+	for i := range testFiles {
+		ti := testFiles[i]
+		c := loadTestFile(t, ti)
+		if c.Width() != ti.width || c.Height() != ti.height {
+			t.Errorf("carver: invalid dimensions for %s", ti.name)
+		}
+	}
 }

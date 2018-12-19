@@ -10,13 +10,13 @@ type Carver interface {
 	Img() *image.Image
 	Height() int
 	Width() int
+	Energy(int, int) (int, error)
 	HSeam() ([]int, error)
 	VSeam() ([]int, error)
 	HRemoveSeam([]int) error
 	VRemoveSeam([]int) error
-	Energy(int, int) (int, error)
 }
 
-func New(file string) (*Carver, error) {
-	return nil, nil
+func New(file string) (Carver, error) {
+	return NewArrayCarver(file)
 }
