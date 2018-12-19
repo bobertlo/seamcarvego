@@ -6,13 +6,13 @@ import (
 
 const MaxEnergy = 1000.0
 
-type Carver struct{
-	img image.Image
-}
-
-func New(img image.Image) *Carver {
-	c := &Carver {
-		img: img,
-	}
-	return c
+type Carver interface {
+	Img() *image.Image
+	Height() int
+	Width() int
+	HSeam() ([]int, error)
+	VSeam() ([]int, error)
+	HRemoveSeam([]int) error
+	VRemoveSeam([]int) error
+	Energy(int, int) (int, error)
 }
