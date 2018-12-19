@@ -16,3 +16,7 @@ type Carver interface {
 	VRemoveSeam([]int) error
 	Energy(int, int) (int, error)
 }
+
+func New(file string) (*Carver, error) {
+	return nil, nil
+}

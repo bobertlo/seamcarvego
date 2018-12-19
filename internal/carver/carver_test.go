@@ -1,6 +1,7 @@
 package carver
 
 import (
+	"path"
 	"testing"
 )
 
@@ -29,6 +30,15 @@ var testFiles = []TestFile{
 		vseam:  []int{7, 7, 6, 7, 6, 5, 4, 3, 4, 5, 4, 5, 6, 7, 7, 6},
 		hseam:  []int{7, 8, 8, 7, 6, 5, 4, 3, 2, 2, 2, 2, 1, 2, 1, 1},
 	},
+}
+
+func loadTestFile(t *testing.T, tf TestFile) *Carver {
+	name := path.Join(testPath, tf.name)
+	c, err := New(name)
+	if err != nil {
+		t.Errorf("Could not load test file %s", name)
+	}
+	return c
 }
 
 func TestCarvers(t *testing.T) {
