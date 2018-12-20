@@ -1,6 +1,9 @@
 package carver
 
 import (
+	"image"
+	_ "image/png"
+	"os"
 	"path"
 	"testing"
 )
@@ -17,11 +20,11 @@ type TestFile struct {
 
 var testFiles = []TestFile{
 	TestFile{
-		name: "5x10.png",
-		width: 5,
+		name:   "5x10.png",
+		width:  5,
 		height: 10,
-		vseam: []int{ 0, 1, 1, 2, 1, 2, 3, 2, 1, 1 },
-		hseam: []int{ 1, 2, 2, 1, 1 },
+		vseam:  []int{0, 1, 1, 2, 1, 2, 3, 2, 1, 1},
+		hseam:  []int{1, 2, 2, 1, 1},
 	},
 	TestFile{
 		name:   "16x16.png",
@@ -33,10 +36,17 @@ var testFiles = []TestFile{
 }
 
 func loadTestFile(t *testing.T, tf TestFile) Carver {
-	name := path.Join(testPath, tf.name)
-	c, err := New(name)
+	f, err := os.Open(path.Join(testPath, tf.name))
 	if err != nil {
-		t.Errorf("Could not load test file %s", name)
+		t.Errorf("Could not open test file %s", tf.name)
+	}
+	im, _, err := image.Decode(f)
+	if err != nil {
+		t.Errorf("Could not decode test file %s", tf.name)
+	}
+	c, err := New(im)
+	if err != nil {
+		t.Errorf("%s: err", tf.name)
 	}
 	return c
 }

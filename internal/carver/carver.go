@@ -7,7 +7,7 @@ import (
 const MaxEnergy = 1000.0
 
 type Carver interface {
-	Img() *image.Image
+	Img() image.Image
 	Height() int
 	Width() int
 	Energy(int, int) (int, error)
@@ -17,6 +17,6 @@ type Carver interface {
 	VRemoveSeam([]int) error
 }
 
-func New(file string) (Carver, error) {
-	return NewArrayCarver(file)
+func New(img image.Image) (Carver, error) {
+	return NewArrayCarver(img)
 }

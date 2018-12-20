@@ -5,22 +5,28 @@ import (
 )
 
 type ArrayCarver struct {
+	img image.Image
 }
 
-func NewArrayCarver(file string) (*ArrayCarver, error) {
-	return nil, nil
+func NewArrayCarver(img image.Image) (*ArrayCarver, error) {
+	c := &ArrayCarver{
+		img: img,
+	}
+	return c, nil
 }
 
-func (*ArrayCarver) Img() *image.Image {
-	return nil
+func (a *ArrayCarver) Img() image.Image {
+	return a.img
 }
 
-func (*ArrayCarver) Height() int {
-	return 0
+func (a *ArrayCarver) Height() int {
+	b := a.img.Bounds()
+	return b.Max.Y - b.Min.Y
 }
 
-func (*ArrayCarver) Width() int {
-	return 0
+func (a *ArrayCarver) Width() int {
+	b := a.img.Bounds()
+	return b.Max.X - b.Min.X
 }
 
 func (*ArrayCarver) Energy(y, x int) (int, error) {
