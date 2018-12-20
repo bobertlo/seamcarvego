@@ -16,6 +16,8 @@ type TestFile struct {
 	height int
 	hseam  []int
 	vseam  []int
+	energy []float64
+	eRow   int
 }
 
 var testFiles = []TestFile{
@@ -25,6 +27,8 @@ var testFiles = []TestFile{
 		height: 10,
 		vseam:  []int{0, 1, 1, 2, 1, 2, 3, 2, 1, 1},
 		hseam:  []int{1, 2, 2, 1, 1},
+		eRow:   2,
+		energy: []float64{1000, 0, 190, 234, 1000},
 	},
 	TestFile{
 		name:   "16x16.png",
@@ -32,6 +36,9 @@ var testFiles = []TestFile{
 		height: 16,
 		vseam:  []int{7, 7, 6, 7, 6, 5, 4, 3, 4, 5, 4, 5, 6, 7, 7, 6},
 		hseam:  []int{7, 8, 8, 7, 6, 5, 4, 3, 2, 2, 2, 2, 1, 2, 1, 1},
+		eRow:   1,
+		energy: []float64{1000, 312, 262, 268, 332, 169, 215, 117, 300, 247, 265,
+			263, 138, 372, 214, 1000},
 	},
 }
 
@@ -58,5 +65,60 @@ func TestCarvers(t *testing.T) {
 		if c.Width() != ti.width || c.Height() != ti.height {
 			t.Errorf("carver: invalid dimensions for %s", ti.name)
 		}
+		for i, te := range ti.energy {
+			e, err := c.Energy(ti.eRow, i)
+			if err != nil {
+				t.Errorf("%s: Energy: %s", ti.name, err)
+			}
+			if e != te {
+				t.Errorf("%s: invalid energy %f (expecting %f)", ti.name, e, te)
+			}
+		}
+	}
+}
+
+func loadDefaultCarver(t *testing.T) Carver {
+	f, err := os.Open(path.Join(testPath, testFiles[0].name))
+	if err != nil {
+		t.Errorf("Could not open default test file: %s", testFiles[0].name)
+	}
+	im, _, err := image.Decode(f)
+	if err != nil {
+		t.Errorf("Could not decode default test file %s", testFiles[0].name)
+	}
+	c, err := New(im)
+	if err != nil {
+		t.Errorf("%s: err", testFiles[0].name)
+	}
+	return c
+}
+
+func TestEnergy(t *testing.T) {
+	c := loadDefaultCarver(t)
+	_, err := c.Energy(-1,1)
+	_, err2 := c.Energy(1,-1)
+	if err != ErrInvalid || err2 != ErrInvalid {
+		t.Error("out of bounds check fail")
+	}
+	_, err = c.Energy(1,c.Width())
+	_, err2 = c.Energy(c.Height(), 1)
+	if err != ErrInvalid || err2 != ErrInvalid {
+		t.Error("out of bounds check fail")
+	}
+	e, err := c.Energy(0,1)
+	if err != nil || e != MaxEnergy {
+		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
+	}
+	e, err = c.Energy(1,0)
+	if err != nil || e != MaxEnergy {
+		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
+	}
+	e, err = c.Energy(1,c.Width()-1)
+	if err != nil || e != MaxEnergy {
+		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
+	}
+	e, err = c.Energy(c.Height()-1,1)
+	if err != nil || e != MaxEnergy {
+		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
 	}
 }

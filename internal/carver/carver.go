@@ -10,7 +10,7 @@ type Carver interface {
 	Img() image.Image
 	Height() int
 	Width() int
-	Energy(int, int) (int, error)
+	Energy(int, int) (float64, error)
 	HSeam() ([]int, error)
 	VSeam() ([]int, error)
 	HRemoveSeam([]int) error
