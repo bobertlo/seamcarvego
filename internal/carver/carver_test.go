@@ -66,7 +66,7 @@ func TestCarvers(t *testing.T) {
 			t.Errorf("carver: invalid dimensions for %s", ti.name)
 		}
 		for i, te := range ti.energy {
-			e, err := c.Energy(ti.eRow, i)
+			e, err := c.Energy(i, ti.eRow)
 			if err != nil {
 				t.Errorf("%s: Energy: %s", ti.name, err)
 			}
@@ -100,8 +100,8 @@ func TestEnergy(t *testing.T) {
 	if err != ErrInvalid || err2 != ErrInvalid {
 		t.Error("out of bounds check fail")
 	}
-	_, err = c.Energy(1,c.Width())
-	_, err2 = c.Energy(c.Height(), 1)
+	_, err = c.Energy(c.Width(), 1)
+	_, err2 = c.Energy(1, c.Height())
 	if err != ErrInvalid || err2 != ErrInvalid {
 		t.Error("out of bounds check fail")
 	}
@@ -113,11 +113,11 @@ func TestEnergy(t *testing.T) {
 	if err != nil || e != MaxEnergy {
 		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
 	}
-	e, err = c.Energy(1,c.Width()-1)
+	e, err = c.Energy(c.Width()-1,1)
 	if err != nil || e != MaxEnergy {
 		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
 	}
-	e, err = c.Energy(c.Height()-1,1)
+	e, err = c.Energy(1,c.Height()-1)
 	if err != nil || e != MaxEnergy {
 		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
 	}
