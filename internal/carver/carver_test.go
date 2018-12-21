@@ -3,6 +3,7 @@ package carver
 import (
 	"image"
 	_ "image/png"
+	"math"
 	"os"
 	"path"
 	"testing"
@@ -70,7 +71,8 @@ func TestCarvers(t *testing.T) {
 			if err != nil {
 				t.Errorf("%s: Energy: %s", ti.name, err)
 			}
-			if e != te {
+			d := math.Abs(e - te)
+			if d > 0.5 {
 				t.Errorf("%s: invalid energy %f (expecting %f)", ti.name, e, te)
 			}
 		}

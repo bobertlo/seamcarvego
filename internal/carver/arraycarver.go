@@ -34,15 +34,9 @@ func (a *ArrayCarver) Width() int {
 func gradient(ca, cb color.Color) float64 {
 	ar, ag, ab, _ := ca.RGBA()
 	br, bg, bb, _ := cb.RGBA()
-	ar /= 257
-	ag /= 257
-	ab /= 257
-	br /= 257
-	bg /= 257
-	bb /= 257
-	r := float64(ar - br)
-	g := float64(ag - bg)
-	b := float64(ab - bb)
+	r := (float64(ar) - float64(br)) / 257
+	g := (float64(ag) - float64(bg)) / 257
+	b := (float64(ab) - float64(bb)) / 257
 	return math.Pow(r, 2) + math.Pow(g, 2) + math.Pow(b, 2);
 }
 
