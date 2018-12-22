@@ -95,6 +95,22 @@ func loadDefaultCarver(t *testing.T) Carver {
 	return c
 }
 
+func loadDefaultArrayCarver(t *testing.T) *ArrayCarver {
+	f, err := os.Open(path.Join(testPath, testFiles[0].name))
+	if err != nil {
+		t.Errorf("Could not open default test file: %s", testFiles[0].name)
+	}
+	im, _, err := image.Decode(f)
+	if err != nil {
+		t.Errorf("Could not decode default test file %s", testFiles[0].name)
+	}
+	c, err := NewArrayCarver(im)
+	if err != nil {
+		t.Errorf("%s: err", testFiles[0].name)
+	}
+	return c
+}
+
 func TestEnergy(t *testing.T) {
 	c := loadDefaultCarver(t)
 	_, err := c.Energy(-1,1)
@@ -122,5 +138,14 @@ func TestEnergy(t *testing.T) {
 	e, err = c.Energy(1,c.Height()-1)
 	if err != nil || e != MaxEnergy {
 		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
+	}
+}
+
+func TestArraryVerifySeam(t *testing.T) {
+	c := loadDefaultArrayCarver(t)
+	err := c.verifySeam(testFiles[0].hseam, true)
+	err2 := c.verifySeam(testFiles[0].vseam, false)
+	if err != nil || err2 != nil {
+		t.Error("seam test failed")
 	}
 }

@@ -63,6 +63,37 @@ func (a *ArrayCarver) Energy(x, y int) (float64, error) {
 	return math.Sqrt(xg + yg), nil
 }
 
+func (a *ArrayCarver) verifySeam(seam []int, h bool) error {
+	var max int
+	var length int
+	if h {
+		max = a.Height()-1
+		length = a.Width()
+	} else {
+		max = a.Width()-1
+		length = a.Height()
+	}
+
+	if len(seam) != length {
+		return ErrInvalid
+	}
+
+	var prev int = seam[0]
+	for i, n := range(seam) {
+		if n < 0 || n > max {
+			return ErrInvalid
+		}
+		if i > 0 {
+			d := n - prev
+			if d > 1 || d < -1 {
+				return ErrInvalid
+			}
+		}
+		prev = n
+	}
+
+	return nil
+}
 func (*ArrayCarver) HSeam() ([]int, error) {
 	return nil, nil
 }
