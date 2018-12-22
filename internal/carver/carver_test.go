@@ -59,7 +59,7 @@ func loadTestFile(t *testing.T, tf TestFile) Carver {
 	return c
 }
 
-func equals(a,b []int) bool {
+func equals(a, b []int) bool {
 	if len(a) != len(b) {
 		return false
 	}
@@ -92,7 +92,7 @@ func TestCarvers(t *testing.T) {
 		if err != nil {
 			t.Errorf("%s: error finding V. Seam", ti.name)
 		}
-		if !equals(vseam,ti.vseam) {
+		if !equals(vseam, ti.vseam) {
 			t.Errorf("%s: vseam mismatch", ti.name)
 			t.Errorf("recieved:  %v", vseam)
 			t.Errorf("expecting: %v", ti.vseam)
@@ -134,8 +134,8 @@ func loadDefaultArrayCarver(t *testing.T) *ArrayCarver {
 
 func TestEnergy(t *testing.T) {
 	c := loadDefaultCarver(t)
-	_, err := c.Energy(-1,1)
-	_, err2 := c.Energy(1,-1)
+	_, err := c.Energy(-1, 1)
+	_, err2 := c.Energy(1, -1)
 	if err != ErrInvalid || err2 != ErrInvalid {
 		t.Error("out of bounds check fail")
 	}
@@ -144,19 +144,19 @@ func TestEnergy(t *testing.T) {
 	if err != ErrInvalid || err2 != ErrInvalid {
 		t.Error("out of bounds check fail")
 	}
-	e, err := c.Energy(0,1)
+	e, err := c.Energy(0, 1)
 	if err != nil || e != MaxEnergy {
 		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
 	}
-	e, err = c.Energy(1,0)
+	e, err = c.Energy(1, 0)
 	if err != nil || e != MaxEnergy {
 		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
 	}
-	e, err = c.Energy(c.Width()-1,1)
+	e, err = c.Energy(c.Width()-1, 1)
 	if err != nil || e != MaxEnergy {
 		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
 	}
-	e, err = c.Energy(1,c.Height()-1)
+	e, err = c.Energy(1, c.Height()-1)
 	if err != nil || e != MaxEnergy {
 		t.Errorf("border energy must equal MaxEnergy (%f)", MaxEnergy)
 	}
@@ -174,7 +174,7 @@ func TestArraryVerifySeam(t *testing.T) {
 	if err == nil || err2 == nil {
 		t.Error("seam length test failed")
 	}
-	tseam := []int{0,1,4,2,0}
+	tseam := []int{0, 1, 4, 2, 0}
 	err = c.verifySeam(tseam, true)
 	if err == nil {
 		t.Error("seam continuity test fail")
