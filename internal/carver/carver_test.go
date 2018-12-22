@@ -148,4 +148,14 @@ func TestArraryVerifySeam(t *testing.T) {
 	if err != nil || err2 != nil {
 		t.Error("seam test failed")
 	}
+	err = c.verifySeam(testFiles[0].hseam, false)
+	err2 = c.verifySeam(testFiles[0].vseam, true)
+	if err == nil || err2 == nil {
+		t.Error("seam length test failed")
+	}
+	tseam := []int{0,1,4,2,0}
+	err = c.verifySeam(tseam, true)
+	if err == nil {
+		t.Error("seam continuity test fail")
+	}
 }
