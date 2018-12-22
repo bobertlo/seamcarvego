@@ -22,7 +22,7 @@ type TestFile struct {
 }
 
 var testFiles = []TestFile{
-	TestFile{
+	{
 		name:   "5x10.png",
 		width:  5,
 		height: 10,
@@ -31,7 +31,7 @@ var testFiles = []TestFile{
 		eRow:   2,
 		energy: []float64{1000, 0, 190, 234, 1000},
 	},
-	TestFile{
+	{
 		name:   "16x16.png",
 		width:  16,
 		height: 16,
@@ -94,7 +94,7 @@ func TestCarvers(t *testing.T) {
 		}
 		if !equals(vseam, ti.vseam) {
 			t.Errorf("%s: vseam mismatch", ti.name)
-			t.Errorf("recieved:  %v", vseam)
+			t.Errorf("received:  %v", vseam)
 			t.Errorf("expecting: %v", ti.vseam)
 		}
 	}
