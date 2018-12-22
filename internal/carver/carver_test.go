@@ -83,6 +83,8 @@ func TestCarvers(t *testing.T) {
 			if err != nil {
 				t.Errorf("%s: Energy: %s", ti.name, err)
 			}
+
+			// other test client rounds energy, so check to within 0.5
 			d := math.Abs(e - te)
 			if d > 0.5 {
 				t.Errorf("%s: invalid energy %f (expecting %f)", ti.name, e, te)
