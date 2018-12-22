@@ -94,12 +94,71 @@ func (a *ArrayCarver) verifySeam(seam []int, h bool) error {
 
 	return nil
 }
+
+func (a *ArrayCarver) toIndex(x, y int) int {
+	return x + (y * a.Width())
+}
 func (*ArrayCarver) HSeam() ([]int, error) {
 	return nil, nil
 }
 
-func (*ArrayCarver) VSeam() ([]int, error) {
-	return nil, nil
+func (a *ArrayCarver) VSeam() ([]int, error) {
+	w := a.Width()
+	h := a.Height()
+	distTo := make([]float64, w*h)
+	edgeTo := make([]int, w*h)
+	e := make([]float64, w*h)
+
+	for i := 0; i < h; i++ {
+		for j := 0; j < w; j++ {
+			en, err := a.Energy(j,i)
+			if err != nil {
+				return nil, err
+			}
+			e[a.toIndex(j,i)] = en
+		}
+	}
+
+	for i := 0; i < w; i++ {
+		distTo[a.toIndex(i,0)] = MaxEnergy
+	}
+
+	for i := 1; i < h; i++ {
+		for j := 0; j < w; j++ {
+			ji := a.toIndex(j,i)
+			distTo[ji] = math.Inf(1)
+			if j > 0 {
+				distTo[ji] = distTo[a.toIndex(j-1,i-1)] + e[ji]
+				edgeTo[ji] = a.toIndex(j-1,i-1)
+			}
+			if distTo[a.toIndex(j,i-1)] + e[ji] < distTo[ji] {
+				distTo[ji] = distTo[a.toIndex(j,i-1)] + e[ji]
+				edgeTo[ji] = a.toIndex(j,i-1)
+			}
+			if j < w-1 && distTo[a.toIndex(j+1,i-1)] + e[ji] < distTo[ji] {
+				distTo[ji] = distTo[a.toIndex(j+1,i-1)] + e[ji]
+				edgeTo[ji] = a.toIndex(j+1,i-1)
+			}
+		}
+	}
+
+	mini := a.toIndex(0,h-1)
+	min := distTo[mini]
+	for i := mini+1; i < h*w; i++ {
+		if distTo[i] < min {
+			min = distTo[i]
+			mini = i
+		}
+	}
+
+	res := make([]int,h)
+	n := mini
+	for i := h-1; i >= 0; i-- {
+		res[i] = n%w
+		n = edgeTo[n]
+	}
+
+	return res, nil
 }
 
 func (*ArrayCarver) HRemoveSeam([]int) error {

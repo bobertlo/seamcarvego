@@ -26,7 +26,7 @@ var testFiles = []TestFile{
 		name:   "5x10.png",
 		width:  5,
 		height: 10,
-		vseam:  []int{0, 1, 1, 2, 1, 2, 3, 2, 1, 1},
+		vseam:  []int{0, 1, 1, 2, 1, 2, 3, 2, 1, 0},
 		hseam:  []int{1, 2, 2, 1, 1},
 		eRow:   2,
 		energy: []float64{1000, 0, 190, 234, 1000},
@@ -35,7 +35,7 @@ var testFiles = []TestFile{
 		name:   "16x16.png",
 		width:  16,
 		height: 16,
-		vseam:  []int{7, 7, 6, 7, 6, 5, 4, 3, 4, 5, 4, 5, 6, 7, 7, 6},
+		vseam:  []int{6, 7, 6, 7, 6, 5, 4, 3, 4, 5, 4, 5, 6, 7, 7, 6},
 		hseam:  []int{7, 8, 8, 7, 6, 5, 4, 3, 2, 2, 2, 2, 1, 2, 1, 1},
 		eRow:   1,
 		energy: []float64{1000, 312, 262, 268, 332, 169, 215, 117, 300, 247, 265,
@@ -59,6 +59,18 @@ func loadTestFile(t *testing.T, tf TestFile) Carver {
 	return c
 }
 
+func equals(a,b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := 0; i < len(a); i++ {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func TestCarvers(t *testing.T) {
 	for i := range testFiles {
 		ti := testFiles[i]
@@ -75,6 +87,15 @@ func TestCarvers(t *testing.T) {
 			if d > 0.5 {
 				t.Errorf("%s: invalid energy %f (expecting %f)", ti.name, e, te)
 			}
+		}
+		vseam, err := c.VSeam()
+		if err != nil {
+			t.Errorf("%s: error finding V. Seam", ti.name)
+		}
+		if !equals(vseam,ti.vseam) {
+			t.Errorf("%s: vseam mismatch", ti.name)
+			t.Errorf("recieved:  %v", vseam)
+			t.Errorf("expecting: %v", ti.vseam)
 		}
 	}
 }
