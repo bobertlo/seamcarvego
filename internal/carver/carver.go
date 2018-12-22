@@ -19,9 +19,3 @@ type Carver interface {
 	HRemoveSeam([]int) error
 	VRemoveSeam([]int) error
 }
-
-// New creates a new seam carver (currently, using the ArrayCarver
-// implementation.)
-func New(img image.Image) (Carver, error) {
-	return NewArrayCarver(img)
-}
