@@ -9,12 +9,16 @@ import (
 // ArrayCarver is a simple, array based implementation of seam carving.
 type ArrayCarver struct {
 	img image.Image
+	height int
+	width int
 }
 
 // NewArrayCarver returns a new Carver for img
 func NewArrayCarver(img image.Image) (*ArrayCarver, error) {
 	c := &ArrayCarver{
 		img: img,
+		width: img.Bounds().Dx(),
+		height: img.Bounds().Dy(),
 	}
 	return c, nil
 }
@@ -26,14 +30,12 @@ func (a *ArrayCarver) Img() image.Image {
 
 // Height returns the current height of the image
 func (a *ArrayCarver) Height() int {
-	b := a.img.Bounds()
-	return b.Max.Y - b.Min.Y
+	return a.height
 }
 
 // Width returns the current width of the image
 func (a *ArrayCarver) Width() int {
-	b := a.img.Bounds()
-	return b.Max.X - b.Min.X
+	return a.width
 }
 
 func gradient(ca, cb color.Color) float64 {
@@ -118,6 +120,7 @@ func (a *ArrayCarver) VSeam() ([]int, error) {
 	edgeTo := make([]int, w*h)
 	e := make([]float64, w*h)
 
+	// calculate energy
 	for i := 0; i < h; i++ {
 		for j := 0; j < w; j++ {
 			en, err := a.Energy(j, i)
@@ -128,10 +131,12 @@ func (a *ArrayCarver) VSeam() ([]int, error) {
 		}
 	}
 
+	// process first line
 	for i := 0; i < w; i++ {
 		distTo[a.toIndex(i, 0)] = MaxEnergy
 	}
 
+	// calculate shortest path to each cell, starting on the second line
 	for i := 1; i < h; i++ {
 		for j := 0; j < w; j++ {
 			ji := a.toIndex(j, i)
@@ -151,6 +156,7 @@ func (a *ArrayCarver) VSeam() ([]int, error) {
 		}
 	}
 
+	// find shortest path on the last row
 	mini := a.toIndex(0, h-1)
 	min := distTo[mini]
 	for i := mini + 1; i < h*w; i++ {
@@ -160,22 +166,30 @@ func (a *ArrayCarver) VSeam() ([]int, error) {
 		}
 	}
 
+	// create and return seam array
 	res := make([]int, h)
 	n := mini
 	for i := h - 1; i >= 0; i-- {
 		res[i] = n % w
 		n = edgeTo[n]
 	}
-
 	return res, nil
 }
 
 // HRemoveSeam modifies the image, removing a horizontal seam
-func (*ArrayCarver) HRemoveSeam([]int) error {
+func (a *ArrayCarver) HRemoveSeam(seam []int) error {
+	err := a.verifySeam(seam, true)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 // VRemoveSeam modifies the image, removing a vertical seam
-func (*ArrayCarver) VRemoveSeam([]int) error {
+func (a *ArrayCarver) VRemoveSeam(seam []int) error {
+	err := a.verifySeam(seam, false)
+	if err != nil {
+		return nil
+	}
 	return nil
 }
