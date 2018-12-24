@@ -3,21 +3,28 @@ package carver
 import (
 	"image"
 	"image/color"
+	"image/draw"
+	_ "image/jpeg"
+	_ "image/png"
 	"math"
 )
 
 // ArrayCarver is a simple, array based implementation of seam carving.
 type ArrayCarver struct {
-	img image.Image
+	img    draw.Image
 	height int
-	width int
+	width  int
 }
 
 // NewArrayCarver returns a new Carver for img
 func NewArrayCarver(img image.Image) (*ArrayCarver, error) {
+	d, ok := img.(draw.Image)
+	if !ok {
+		return nil, ErrFormat
+	}
 	c := &ArrayCarver{
-		img: img,
-		width: img.Bounds().Dx(),
+		img:    d,
+		width:  img.Bounds().Dx(),
 		height: img.Bounds().Dy(),
 	}
 	return c, nil
@@ -140,14 +147,11 @@ func (a *ArrayCarver) VSeam() ([]int, error) {
 	for i := 1; i < h; i++ {
 		for j := 0; j < w; j++ {
 			ji := a.toIndex(j, i)
-			distTo[ji] = math.Inf(1)
-			if j > 0 {
+			distTo[ji] = distTo[a.toIndex(j, i-1)] + e[ji]
+			edgeTo[ji] = a.toIndex(j, i-1)
+			if j > 0 && distTo[a.toIndex(j-1, i-1)] + e[ji] < distTo[ji] {
 				distTo[ji] = distTo[a.toIndex(j-1, i-1)] + e[ji]
 				edgeTo[ji] = a.toIndex(j-1, i-1)
-			}
-			if distTo[a.toIndex(j, i-1)]+e[ji] < distTo[ji] {
-				distTo[ji] = distTo[a.toIndex(j, i-1)] + e[ji]
-				edgeTo[ji] = a.toIndex(j, i-1)
 			}
 			if j < w-1 && distTo[a.toIndex(j+1, i-1)]+e[ji] < distTo[ji] {
 				distTo[ji] = distTo[a.toIndex(j+1, i-1)] + e[ji]

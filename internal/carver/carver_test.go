@@ -2,6 +2,7 @@ package carver
 
 import (
 	"image"
+	_ "image/jpeg"
 	_ "image/png"
 	"math"
 	"os"
@@ -26,7 +27,7 @@ var testFiles = []TestFile{
 		name:   "5x10.png",
 		width:  5,
 		height: 10,
-		vseam:  []int{0, 1, 1, 2, 1, 2, 3, 2, 1, 0},
+		vseam:  []int{1, 1, 1, 2, 1, 2, 3, 2, 1, 0},
 		hseam:  []int{1, 2, 2, 1, 1},
 		eRow:   2,
 		energy: []float64{1000, 0, 190, 234, 1000},
@@ -35,26 +36,40 @@ var testFiles = []TestFile{
 		name:   "16x16.png",
 		width:  16,
 		height: 16,
-		vseam:  []int{6, 7, 6, 7, 6, 5, 4, 3, 4, 5, 4, 5, 6, 7, 7, 6},
+		vseam:  []int{7, 7, 6, 7, 6, 5, 4, 3, 4, 5, 4, 5, 6, 7, 7, 6},
 		hseam:  []int{7, 8, 8, 7, 6, 5, 4, 3, 2, 2, 2, 2, 1, 2, 1, 1},
 		eRow:   1,
 		energy: []float64{1000, 312, 262, 268, 332, 169, 215, 117, 300, 247, 265,
 			263, 138, 372, 214, 1000},
 	},
+/*
+	{
+		name:   "10x10.jpg",
+		width:  10,
+		height: 10,
+		vseam:  []int{7, 8, 7, 6, 5, 6, 5, 6, 7, 6},
+		hseam:  []int{1, 2, 3, 2, 2, 3, 3, 2, 1, 1},
+		eRow:   3,
+		energy: []float64{1000, 242, 182, 333, 235, 194, 213, 442, 288, 1000},
+	},
+*/
 }
 
 func loadTestFile(t *testing.T, tf TestFile) Carver {
 	f, err := os.Open(path.Join(testPath, tf.name))
 	if err != nil {
 		t.Errorf("Could not open test file %s", tf.name)
+		return nil
 	}
 	im, _, err := image.Decode(f)
 	if err != nil {
 		t.Errorf("Could not decode test file %s", tf.name)
+		return nil
 	}
 	c, err := NewArrayCarver(im)
 	if err != nil {
-		t.Errorf("%s: err", tf.name)
+		t.Errorf("%s: %s", tf.name, err)
+		return nil
 	}
 	return c
 }
@@ -75,6 +90,9 @@ func TestCarvers(t *testing.T) {
 	for i := range testFiles {
 		ti := testFiles[i]
 		c := loadTestFile(t, ti)
+		if c == nil {
+			return
+		}
 		if c.Width() != ti.width || c.Height() != ti.height {
 			t.Errorf("carver: invalid dimensions for %s", ti.name)
 		}
