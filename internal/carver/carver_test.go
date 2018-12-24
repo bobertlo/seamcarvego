@@ -42,17 +42,17 @@ var testFiles = []TestFile{
 		energy: []float64{1000, 312, 262, 268, 332, 169, 215, 117, 300, 247, 265,
 			263, 138, 372, 214, 1000},
 	},
-/*
-	{
-		name:   "10x10.jpg",
-		width:  10,
-		height: 10,
-		vseam:  []int{7, 8, 7, 6, 5, 6, 5, 6, 7, 6},
-		hseam:  []int{1, 2, 3, 2, 2, 3, 3, 2, 1, 1},
-		eRow:   3,
-		energy: []float64{1000, 242, 182, 333, 235, 194, 213, 442, 288, 1000},
-	},
-*/
+	/*
+		{
+			name:   "10x10.jpg",
+			width:  10,
+			height: 10,
+			vseam:  []int{7, 8, 7, 6, 5, 6, 5, 6, 7, 6},
+			hseam:  []int{1, 2, 3, 2, 2, 3, 3, 2, 1, 1},
+			eRow:   3,
+			energy: []float64{1000, 242, 182, 333, 235, 194, 213, 442, 288, 1000},
+		},
+	*/
 }
 
 func loadTestFile(t *testing.T, tf TestFile) Carver {

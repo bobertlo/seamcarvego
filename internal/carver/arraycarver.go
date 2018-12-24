@@ -4,8 +4,6 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	_ "image/jpeg"
-	_ "image/png"
 	"math"
 )
 
@@ -149,7 +147,7 @@ func (a *ArrayCarver) VSeam() ([]int, error) {
 			ji := a.toIndex(j, i)
 			distTo[ji] = distTo[a.toIndex(j, i-1)] + e[ji]
 			edgeTo[ji] = a.toIndex(j, i-1)
-			if j > 0 && distTo[a.toIndex(j-1, i-1)] + e[ji] < distTo[ji] {
+			if j > 0 && distTo[a.toIndex(j-1, i-1)]+e[ji] < distTo[ji] {
 				distTo[ji] = distTo[a.toIndex(j-1, i-1)] + e[ji]
 				edgeTo[ji] = a.toIndex(j-1, i-1)
 			}
