@@ -196,7 +196,7 @@ func TestArraryVerifySeam(t *testing.T) {
 	tseam = []int{7, 8, 9, 10, 11}
 	tseam2 = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	err = c.verifySeam(tseam, true)
-	err = c.verifySeam(tseam2, false)
+	err2 = c.verifySeam(tseam2, false)
 	if err == nil || err2 == nil {
 		t.Error("seam bounds test fail")
 	}
@@ -215,7 +215,7 @@ func TestArrayRemove(t *testing.T) {
 
 	err = c.VRemoveSeam([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
 	err2 = c.VRemoveSeam([]int{1, 2, 2, 3, 4, 5, 4, 3, 4, 3, 3, 4})
-	if err2 == nil { //|| err2 == nil {
+	if err == nil || err2 == nil {
 		t.Error("seam check fail")
 	}
 
