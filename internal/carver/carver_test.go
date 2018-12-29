@@ -197,7 +197,7 @@ func TestArraryVerifySeam(t *testing.T) {
 	tseam2 = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	err = c.verifySeam(tseam, true)
 	err = c.verifySeam(tseam2, false)
-	if err == nil  || err2 == nil{
+	if err == nil || err2 == nil {
 		t.Error("seam bounds test fail")
 	}
 }
@@ -206,15 +206,15 @@ func TestArrayRemove(t *testing.T) {
 	c := loadFirstArrayCarver(t)
 
 	// test invalid seam sizes
-	err := c.HRemoveSeam([]int{1,2,3,4})
-	err2 := c.HRemoveSeam([]int{1,2,3,4,5,6})
-	err3 := c.HRemoveSeam([]int{1,2,3,4,12})
+	err := c.HRemoveSeam([]int{1, 2, 3, 4})
+	err2 := c.HRemoveSeam([]int{1, 2, 3, 4, 5, 6})
+	err3 := c.HRemoveSeam([]int{1, 2, 3, 4, 12})
 	if err == nil || err2 == nil || err3 == nil {
 		t.Error("seam check fail")
 	}
 
-	err = c.VRemoveSeam([]int{1,2,3,4,5,6,7,8,9})
-	err2 = c.VRemoveSeam([]int{1,2,2,3,4,5,4,3,4,3,3,4})
+	err = c.VRemoveSeam([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
+	err2 = c.VRemoveSeam([]int{1, 2, 2, 3, 4, 5, 4, 3, 4, 3, 3, 4})
 	if err2 == nil { //|| err2 == nil {
 		t.Error("seam check fail")
 	}
