@@ -191,7 +191,7 @@ func (a *ArrayCarver) HRemoveSeam(seam []int) error {
 func (a *ArrayCarver) VRemoveSeam(seam []int) error {
 	err := a.verifySeam(seam, false)
 	if err != nil {
-		return nil
+		return err
 	}
 	return nil
 }
