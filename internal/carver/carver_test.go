@@ -20,6 +20,8 @@ type TestFile struct {
 	vseam  []int
 	energy []float64
 	eRow   int
+	hFile  string
+	vFile  string
 }
 
 var testFiles = []TestFile{
@@ -31,6 +33,7 @@ var testFiles = []TestFile{
 		hseam:  []int{1, 2, 2, 1, 1},
 		eRow:   2,
 		energy: []float64{1000, 0, 190, 234, 1000},
+		vFile:  "5x10-out-v.png",
 	},
 	{
 		name:   "16x16.png",
@@ -58,12 +61,12 @@ var testFiles = []TestFile{
 func loadTestFile(t *testing.T, tf TestFile) Carver {
 	f, err := os.Open(path.Join(testPath, tf.name))
 	if err != nil {
-		t.Errorf("Could not open test file %s", tf.name)
+		t.Errorf("Could not open test file %s: %s", tf.name, err)
 		return nil
 	}
 	im, _, err := image.Decode(f)
 	if err != nil {
-		t.Errorf("Could not decode test file %s", tf.name)
+		t.Errorf("Could not decode test file %s: %s", tf.name, err)
 		return nil
 	}
 	c, err := NewArrayCarver(im)
@@ -72,6 +75,26 @@ func loadTestFile(t *testing.T, tf TestFile) Carver {
 		return nil
 	}
 	return c
+}
+
+func equalsPNG(t *testing.T, src image.Image, test string) bool {
+	f, err := os.Open(path.Join(testPath, test))
+	if err != nil {
+		t.Errorf("could not open image file %s: %s", test, err)
+		return false
+	}
+	img, _, err := image.Decode(f)
+	if err != nil {
+		t.Errorf("Could not decode test file %s: %s", test, err)
+		return false
+	}
+	if img.Bounds().Dx() != src.Bounds().Dx() {
+		return false
+	}
+	if img.Bounds().Dy() != src.Bounds().Dy() {
+		return false
+	}
+	return true
 }
 
 func equals(a, b []int) bool {
@@ -220,12 +243,15 @@ func TestArrayRemove(t *testing.T) {
 	}
 
 	// test valid seams
-	err = c.HRemoveSeam(testFiles[0].hseam)
-	if err != nil {
-		t.Errorf("seam removal fail: %s", err)
-	}
 	err = c.VRemoveSeam(testFiles[0].vseam)
 	if err != nil {
 		t.Errorf("seam removal fail: %s", err)
 	}
+	if c.width != 4 {
+		t.Errorf("seam removal invalid")
+	}
+	if !equalsPNG(t, c.Img(), testFiles[0].vFile) {
+		t.Errorf("seam removal did not match test file")
+	}
+
 }

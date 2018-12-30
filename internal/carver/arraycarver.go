@@ -30,7 +30,13 @@ func NewArrayCarver(img image.Image) (*ArrayCarver, error) {
 
 // Img returns the current image from the Carver
 func (a *ArrayCarver) Img() image.Image {
-	return a.img
+	img := image.NewRGBA(image.Rect(0, 0, a.width, a.height))
+	for i := 0; i < a.height; i++ {
+		for j := 0; j < a.width; j++ {
+			img.Set(j, i, a.img.At(j, i))
+		}
+	}
+	return img
 }
 
 // Height returns the current height of the image
@@ -193,5 +199,14 @@ func (a *ArrayCarver) VRemoveSeam(seam []int) error {
 	if err != nil {
 		return err
 	}
+
+	for i, n := range seam {
+		for j := n; j < a.width-1; j++ {
+			a.img.Set(n, i, a.img.At(n+1, i))
+		}
+	}
+
+	a.width--
+
 	return nil
 }
