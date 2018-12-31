@@ -45,8 +45,8 @@ var testFiles = []TestFile{
 		eRow:   1,
 		energy: []float64{1000, 312, 262, 268, 332, 169, 215, 117, 300, 247, 265,
 			263, 138, 372, 214, 1000},
-		hFile:  "16x16-out-h.png",
-		vFile:  "16x16-out-v.png",
+		hFile: "16x16-out-h.png",
+		vFile: "16x16-out-v.png",
 	},
 	/*
 		{
@@ -161,7 +161,7 @@ func TestCarvers(t *testing.T) {
 		if err != nil {
 			t.Errorf("%s: horizonatal seam removal failed: %s", ti.name, err)
 		}
-		if c.Height() != h - 1 {
+		if c.Height() != h-1 {
 			t.Errorf("%s: horozontal seam removal invalid", ti.name)
 		}
 		if !equalsPNG(t, c.Img(), ti.hFile) {
@@ -175,7 +175,7 @@ func TestCarvers(t *testing.T) {
 		if err != nil {
 			t.Errorf("%s: vertical seam removal failed: %s", ti.name, err)
 		}
-		if c.Width() != w - 1 {
+		if c.Width() != w-1 {
 			t.Errorf("%s: vertical seam removal invalid", ti.name)
 		}
 		if !equalsPNG(t, c.Img(), ti.vFile) {
