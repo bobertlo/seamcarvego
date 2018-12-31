@@ -258,7 +258,7 @@ func (a *ArrayCarver) HRemoveSeam(seam []int) error {
 
 	for i, n := range seam {
 		for j := n; j < a.height-1; j++ {
-			a.img.Set(i, n, a.img.At(i, n+1))
+			a.img.Set(i, j, a.img.At(i, j+1))
 		}
 	}
 
@@ -275,7 +275,7 @@ func (a *ArrayCarver) VRemoveSeam(seam []int) error {
 
 	for i, n := range seam {
 		for j := n; j < a.width-1; j++ {
-			a.img.Set(n, i, a.img.At(n+1, i))
+			a.img.Set(j, i, a.img.At(j+1, i))
 		}
 	}
 
