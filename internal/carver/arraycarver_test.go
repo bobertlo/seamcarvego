@@ -159,7 +159,7 @@ func TestCarvers(t *testing.T) {
 		h := c.Height()
 		err = c.HRemoveSeam(ti.hseam)
 		if err != nil {
-			t.Errorf("%s: horizonatal seam removal failed: %s", ti.name, err)
+			t.Errorf("%s: horizontal seam removal failed: %s", ti.name, err)
 		}
 		if c.Height() != h-1 {
 			t.Errorf("%s: horozontal seam removal invalid", ti.name)
