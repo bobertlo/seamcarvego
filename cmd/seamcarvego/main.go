@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/bobertlo/seamcarvego/internal/carver"
 	"image"
-	_ "image/png"
+	"image/png"
 	"os"
 	"strconv"
 )
@@ -66,4 +66,11 @@ func main() {
 			c.VRemoveSeam(s)
 		}
 	}
+
+	w, err := os.OpenFile(os.Args[2], os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error opening output file %s: %s\n", os.Args[2], err)
+		os.Exit(1)
+	}
+	png.Encode(w, c.Img())
 }
