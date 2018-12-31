@@ -6,9 +6,20 @@ Status](https://travis-ci.org/bobertlo/seamcarvego.svg?branch=master)](https://t
 Card](https://goreportcard.com/badge/github.com/bobertlo/seamcarvego)](https://goreportcard.com/report/github.com/bobertlo/seamcarvego)
 
 *seamcarvego* is an implementation of a [seam
-carving](https://en.m.wikipedia.org/wiki/Seam_carving) algorithm. To begin, I am
-just porting as assignment I did for an algorithms class to Golang, in a test
-driven manner, but I plan on implementing optimizations on top of that, once the
-implementation is stable and has good test coverage.
+carving](https://en.m.wikipedia.org/wiki/Seam_carving) algorithm. For now, I
+have simply ported an assignment from an algorithms class to go, in a test
+driven manner. I plan to attempt optimizations in the future.
 
-A frontend will be coming once the implementation is completed.
+# Frontend
+
+There is included a front-end with the following syntax:
+
+```
+seamcarvego [input.png] [output.png] [cols] [rows]
+```
+
+The frontend may be installed with `go get` using the following command:
+
+```
+go get github.com/bobertlo/seamcarvego/cmd/seamcarvego
+```
