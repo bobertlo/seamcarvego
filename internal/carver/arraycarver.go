@@ -119,8 +119,73 @@ func (a *ArrayCarver) toIndex(x, y int) int {
 }
 
 // HSeam returns the optimal horizontal seam of the image
-func (*ArrayCarver) HSeam() ([]int, error) {
-	return nil, nil
+func (a *ArrayCarver) HSeam() ([]int, error) {
+	w := a.Width()
+	h := a.Height()
+	distTo := make([]float64, w*h)
+	edgeTo := make([]int, w*h)
+	e := make([]float64, w*h)
+
+	// calculate energy
+	for i := 0; i < h; i++ {
+		for j := 0; j < w; j++ {
+			en, err := a.Energy(j, i)
+			if err != nil {
+				return nil, err
+			}
+			e[a.toIndex(j, i)] = en
+		}
+	}
+
+	// process first line
+	for i := 0; i < h; i++ {
+		distTo[a.toIndex(0, i)] = MaxEnergy
+	}
+
+	// calculate shortest path, starting with second line
+	for i := 1; i < w; i++ {
+		for j := 0; j < h; j++ {
+			ij := a.toIndex(i, j)
+			distTo[ij] = distTo[a.toIndex(i-1, j)] + e[ij]
+			edgeTo[ij] = a.toIndex(i-1, j)
+			if j > 0 {
+				tmpi := a.toIndex(i-1, j-1)
+				tmpe := distTo[tmpi] + e[ij]
+				if tmpe < distTo[ij] {
+					distTo[ij] = tmpe
+					edgeTo[ij] = tmpi
+				}
+			}
+			if j < h-1 {
+				tmpi := a.toIndex(i-1, j+1)
+				tmpe := distTo[tmpi] + e[ij]
+				if tmpe < distTo[ij] {
+					distTo[ij] = tmpe
+					edgeTo[ij] = tmpi
+				}
+			}
+		}
+	}
+
+	// find shortest path on the last row
+	mini := a.toIndex(w-1, 0)
+	min := distTo[mini]
+	for i := 1; i < h; i++ {
+		if distTo[a.toIndex(w-1, i)] < min {
+			min = distTo[i]
+			mini = a.toIndex(w-1, i)
+		}
+	}
+
+	// create and return seam array
+	res := make([]int, w)
+	n := mini
+	for i := w - 1; i >= 0; i-- {
+		res[i] = n / w
+		n = edgeTo[n]
+	}
+
+	return res, nil
 }
 
 // VSeam returns the optimal vertical seam of the image
