@@ -33,6 +33,7 @@ var testFiles = []TestFile{
 		hseam:  []int{1, 2, 2, 1, 1},
 		eRow:   2,
 		energy: []float64{1000, 0, 190, 234, 1000},
+		hFile:  "5x10-out-h.png",
 		vFile:  "5x10-out-v.png",
 	},
 	{
@@ -44,6 +45,8 @@ var testFiles = []TestFile{
 		eRow:   1,
 		energy: []float64{1000, 312, 262, 268, 332, 169, 215, 117, 300, 247, 265,
 			263, 138, 372, 214, 1000},
+		hFile:  "16x16-out-h.png",
+		vFile:  "16x16-out-v.png",
 	},
 	/*
 		{
@@ -131,6 +134,8 @@ func TestCarvers(t *testing.T) {
 				t.Errorf("%s: invalid energy %f (expecting %f)", ti.name, e, te)
 			}
 		}
+
+		// test found seams
 		vseam, err := c.VSeam()
 		if err != nil {
 			t.Errorf("%s: error finding V. Seam", ti.name)
@@ -139,6 +144,42 @@ func TestCarvers(t *testing.T) {
 			t.Errorf("%s: vseam mismatch", ti.name)
 			t.Errorf("received:  %v", vseam)
 			t.Errorf("expecting: %v", ti.vseam)
+		}
+		hseam, err := c.HSeam()
+		if err != nil {
+			t.Errorf("%s: error finding H. Seam", ti.name)
+		}
+		if !equals(hseam, ti.hseam) {
+			t.Errorf("%s: hseam mismatch", ti.name)
+			t.Errorf("received:  %v", hseam)
+			t.Errorf("expecting: %v", ti.hseam)
+		}
+
+		// test removing horizontal seams
+		h := c.Height()
+		err = c.HRemoveSeam(ti.hseam)
+		if err != nil {
+			t.Errorf("%s: horizonatal seam removal failed: %s", ti.name, err)
+		}
+		if c.Height() != h - 1 {
+			t.Errorf("%s: horozontal seam removal invalid", ti.name)
+		}
+		if !equalsPNG(t, c.Img(), ti.hFile) {
+			t.Errorf("%s: horizontal seam removal inconsistent", ti.name)
+		}
+
+		// test removing vertical seams
+		c = loadTestFile(t, ti)
+		w := c.Width()
+		err = c.VRemoveSeam(ti.vseam)
+		if err != nil {
+			t.Errorf("%s: vertical seam removal failed: %s", ti.name, err)
+		}
+		if c.Width() != w - 1 {
+			t.Errorf("%s: vertical seam removal invalid", ti.name)
+		}
+		if !equalsPNG(t, c.Img(), ti.vFile) {
+			t.Errorf("%s: vertical seam removal inconsistent", ti.name)
 		}
 	}
 }
