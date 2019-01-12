@@ -218,13 +218,21 @@ func (a *ArrayCarver) VSeam() ([]int, error) {
 			ji := a.toIndex(j, i)
 			distTo[ji] = distTo[a.toIndex(j, i-1)] + e[ji]
 			edgeTo[ji] = a.toIndex(j, i-1)
-			if j > 0 && distTo[a.toIndex(j-1, i-1)]+e[ji] < distTo[ji] {
-				distTo[ji] = distTo[a.toIndex(j-1, i-1)] + e[ji]
-				edgeTo[ji] = a.toIndex(j-1, i-1)
+			if j > 0 {
+				tmpi := a.toIndex(j-1, i-1)
+				tmpe := distTo[tmpi] + e[ji]
+				if tmpe < distTo[ji] {
+					distTo[ji] = tmpe
+					edgeTo[ji] = tmpi
+				}
 			}
-			if j < w-1 && distTo[a.toIndex(j+1, i-1)]+e[ji] < distTo[ji] {
-				distTo[ji] = distTo[a.toIndex(j+1, i-1)] + e[ji]
-				edgeTo[ji] = a.toIndex(j+1, i-1)
+			if j < w-1 {
+				tmpi := a.toIndex(j+1, i-1)
+				tmpe := distTo[tmpi] + e[ji]
+				if tmpe < distTo[ji] {
+					distTo[ji] = tmpe
+					edgeTo[ji] = tmpi
+				}
 			}
 		}
 	}
