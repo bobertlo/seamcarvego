@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/bobertlo/seamcarvego/internal/carver"
 	"image"
 	"image/png"
 	"os"
 	"strconv"
+
+	"github.com/bobertlo/seamcarvego/internal/carver"
 )
 
 func usage() {
