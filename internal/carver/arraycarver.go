@@ -16,9 +16,10 @@ type ArrayCarver struct {
 
 // NewArrayCarver returns a new Carver for img
 func NewArrayCarver(img image.Image) (*ArrayCarver, error) {
+	// try to cast the input image to a drawable image
 	d, ok := img.(draw.Image)
 	if !ok {
-		return nil, ErrFormat
+		d = drawableImage(img)
 	}
 	c := &ArrayCarver{
 		img:    d,
@@ -26,6 +27,16 @@ func NewArrayCarver(img image.Image) (*ArrayCarver, error) {
 		height: img.Bounds().Dy(),
 	}
 	return c, nil
+}
+
+func drawableImage(img image.Image) draw.Image {
+	d := image.NewRGBA(img.Bounds())
+	for i := 0; i < img.Bounds().Dy(); i++ {
+		for j := 0; j < img.Bounds().Dx(); j++ {
+			d.Set(j, i, img.At(j, i))
+		}
+	}
+	return d
 }
 
 // Img returns the current image from the Carver
